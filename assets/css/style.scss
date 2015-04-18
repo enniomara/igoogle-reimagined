@@ -1,0 +1,367 @@
+$background-main: #eeeeef;
+$background-nav: #42a5f5;
+$content-main: #f3f3f3;
+$drop-shadow-color: rgba(0, 0, 0, 0.5);
+
+$card-background-color: #fcfcfc;
+$card-text-inner-color: #878787;
+
+@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/ 
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby , section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*----------------------------------------------------------- */
+
+* {
+	box-sizing: border-box;
+}
+
+html, body{
+	height: 100%;
+	background: $background-main;
+	font-family: "Open Sans", Arial;
+}
+
+
+.wrapper{
+	width: 95%;
+	margin: 0 auto;
+
+}
+
+nav{
+	width: 100%;
+	background-color: $background-nav;
+
+	
+	.search{
+		padding: 55px 0;
+		text-align: center;
+		img{
+			vertical-align: middle;
+			padding-right: 15px;
+		}
+	}
+
+	input[type="text"]{
+		color: #fbf9f1;
+		background: none;
+		border: 0;
+		border-bottom: 3px solid #56bff4;
+	}
+	input[type="text"], button[type="submit"]{
+		padding: 10px;
+	}
+
+	button[type="submit"]{
+		padding: 15px;
+		background: $content-main;
+		border: 0;
+		border-radius: 100%;
+		cursor: pointer;
+		-webkit-box-shadow: 0px 0px 6px 0px $drop-shadow-color;
+		-moz-box-shadow:    0px 0px 6px 0px $drop-shadow-color;
+		box-shadow:         0px 0px 6px 0px $drop-shadow-color;
+		transition: box-shadow 0.5s linear;
+
+		&:hover{
+			box-shadow:         0px 0px 15px 0px $drop-shadow-color;
+		}
+		&:active{
+			background: #e5e5e5;
+		}
+	}
+
+
+
+	input[type="text"]:focus, button[type="submit"]:focus{
+		outline: 0;
+	}
+
+
+
+}
+
+.card{
+	background-color: $card-background-color;
+	-webkit-box-shadow: 0px 1px 6px 0px $drop-shadow-color;
+	-moz-box-shadow:    0px 1px 6px 0px $drop-shadow-color;
+	box-shadow:         0px 1px 6px 0px $drop-shadow-color;
+	transition: box-shadow 0.5s linear;
+
+}
+
+main {
+	min-height: 100%;
+	position: relative;
+
+	.mainpage .card{
+		width: 250px;
+		height: 260px;
+		margin: 20px 15px;
+		display: inline-block;
+
+		&.weather{	
+			span{
+				font-size: 44px;
+				color: $card-text-inner-color;
+			}
+		}
+		&.news{
+			&>div{
+				height: 100%;
+			}
+			.news-content{
+				padding: 5px 15px 15px 15px;
+				height: 55%;
+			}
+			.news-header-image{
+				height: 45%;
+				img{
+					width: 100%;
+					height: 100%;
+				}
+			}
+			.news-header-text{
+				font-size: 16px;
+			}
+			.news-description{
+				color: $card-text-inner-color;
+				font-size: 12px;
+			}
+		}
+		&.stock{
+			padding: 10px;
+			color: #252525;
+			.abbreviations span:not(:first-child){
+				color: #1a5488;
+			}
+
+			&>div{
+				height: 100%;
+			}
+			.stock-positive{
+				color: #008800;
+			}
+			.stock-negative{
+				color: #cc0000;
+			}
+			.col-header{
+				color: $card-text-inner-color;
+			}
+		}
+
+		&.btc{
+			.value{
+				font-size: 21px;
+			}
+			.differece{
+				font-size: 13px;
+			}
+			color: $card-text-inner-color;
+			img{
+				width: 90px;
+				height: 90px;
+			}
+		}
+		&.products{
+			&>div{
+				height: 100%;
+			}
+			.product-placement-image{
+				width: 100%;
+				height: 45%;
+			}
+
+			.product-information{
+				height: 55%;
+
+			}
+
+			.product-info-inner{
+				height: 75%;
+				padding: 5px 15px 15px 15px;
+				color: $card-text-inner-color;
+				.product-name{
+					font-size: 25px;
+					
+				}
+				.product-availability{
+					font-size: 12px;
+				}
+			}
+			.product-view{
+				height: 25%;
+				
+				.fa-arrow-right{
+					line-height: 1.9;
+				}
+				//The background of the arrow
+				.fa-stack-2x, a{
+					color: #4285f4;
+				}
+			}
+		}
+
+		&.currency-conversion{
+			text-align: center;
+			font-size: 35px;
+			color: $card-text-inner-color;
+			input[type="number"]{
+				color: $card-text-inner-color;
+				width: 50%;
+				font-size: 35px;
+				border: none;
+				background: none;
+				border-bottom: 2px solid #DADADA;
+			}
+
+			.currency{
+				width: 50%;
+			}
+		}
+		.card-wrapper{
+			@include vertical-align;
+		}
+	}
+
+	.flex-container{
+		display: flex;
+		justify-content: space-around;
+		flex-flow: row wrap;
+	}
+
+	
+	@for $i from 1 through 6{
+
+		.order-#{$i}{
+			order: #{$i};
+		}
+	}
+
+	.search-content{
+		
+		
+		.card{
+			max-width: 500px;
+			margin: 0 auto;
+			margin-top: 10px;
+			padding: 25px 40px;
+		}
+
+		.link-results{
+			
+			.results-results{
+				padding: 20px 0;
+				border-bottom: 1px solid #ddd;
+			}
+
+			.link-name{
+				font-size: 16px;
+				color: #6d6d6d;
+			}
+			.link-url{
+				font-size: 11px;
+				color: #9ab97f;
+			}
+			.link-description{
+				font-size: 13px;
+				color: #a3a3a3;
+			}
+		}
+
+		.search-footer{
+			width: 100%;
+			height: 100px;
+			background: blue;
+		}
+	}
+}
+
+
+.grid{
+	/* Clearfix because it has no height because of float on children
+	http://stackoverflow.com/questions/218760/how-do-you-keep-parents-of-floated-elements-from-collapsing?answertab=votes#tab-top
+	 */
+	&:after{
+		content: " ";
+		display: block; 
+		height: 0; 
+		clear: both;
+	} 
+	/* Column design */
+	.col-1_3{
+		width: 33%;
+		float: left;
+		span{
+			display: block;
+		}
+	}
+}
+
+.text-align-center{
+	text-align: center;
+}
+.text-align-right{
+	text-align: right;
+}
+
+/* Medium screens */
+@media all and (max-width: 620px) {
+  .col{
+	flex: 0 0 100%;
+  }
+}
