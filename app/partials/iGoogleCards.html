@@ -22,7 +22,7 @@
 
 			</div>
 		</div>
-		<div class="card col order-3 stock">
+		<div class="card col order-3 stock" ng-controller="StockCtrl">
 			<div class="card-wrapper">
 				<span>Index Components - Top Movers</span>
 
@@ -30,41 +30,17 @@
 					<div class="col-1_3 abbreviations">
 						<span class="col-header">Symbol</span>
 						<br>
-						<span>UNH</span>
-						<span>BA</span>
-						<span>INTC</span>
-						<span>CAT</span>
-						<span>DD</span>
-						<span>XOM</span>
-						<span>JPM</span>
-						<span>TRV</span>
-						<span>CYV</span>
+						<span ng-repeat="stock in stockValues">{{stock.Symbol}}</span>
 					</div>
 					<div class="col-1_3 text-align-center">
 						<span class="col-header">Price</span>
 						<br>
-						<span>116.40</span>
-						<span>154.74</span>
-						<span>33.76</span>
-						<span>82.49</span>
-						<span>77.46</span>
-						<span>89.01</span>
-						<span>59.35</span>
-						<span>107.08</span>
-						<span>107.86</span>
+						<span ng-repeat="stock in stockValues">{{stock.Open}}</span>
 					</div>
 					<div class="col-1_3 text-align-right">
 						<span class="col-header">% Change</span>
 						<br>
-						<span class="stock-positive">3.36%</span>
-						<span>2.26%</span>
-						<span>1.89%</span>
-						<span class="stock-negative">1.13%</span>
-						<span>1.03%</span>
-						<span>1.01%</span>
-						<span>0.75%</span>
-						<span>0.69%</span>
-						<span>0.68%</span>
+						<span ng-repeat="stock in stockValues" ng-class="stockChangeColor(stock.Change)">{{stock.Change}}</span>
 					</div>
 				</div>
 			</div>
