@@ -72,6 +72,52 @@ app.controller('BitcoinConversionCtrl', function($scope, $http){
 	
 
 });
+// This controller handles the currency conversion(uses the conversion rate)
+app.controller('CurrencyConversionCtrl', function($scope, $http){
+	$scope.fromAmount;
+	$scope.toAmount;
+	$scope.currentCurrency = 'from';
+	// Stores all exchange rates
+	$scope.currencyValues = "";
+
+	var exchangeURL = "http://api.fixer.io/latest?symbols=USD,GBP";
+
+	// Make a GET retuest with $http to the currency exchange API
+	$http.get(exchangeURL).then(function(response) {
+		$scope.currencyValues = response.data;
+	});
+
+
+
+	/**
+	 * Is called when the value of currency input is changed. This revalidates the inputs with the proper exchange rate
+	 *
+	 * @method calcCurrency
+	 * @param {String} amount Is either 'to' or 'from'. It indicates at which input the user is(if on from input, amount will be 'from' and vice versa)
+	 */
+	$scope.calcCurrency = function(amount){
+		// This function is called before the HTTP GET has time to finish loading the data. If it does, then an error is thrown
+		if($scope.currencyValues !== ""){
+			switch(amount){
+				case 'to':
+					$scope.fromAmount = $scope.toAmount / $scope.currencyValues.rates.GBP * $scope.currencyValues.rates.USD;
+					//$scope.toAmount * 0.5;
+					break;
+				case 'from':
+					$scope.toAmount = $scope.fromAmount / $scope.currencyValues.rates.USD * $scope.currencyValues.rates.GBP;
+					break;
+			}
+		}
+		return "";
+	};
+
+	$scope.test = function(){
+		var test;
+		console.log($scope.currencyValues.rates.USD * $scope.currencyValues.rates.GBP);
+	};
+
+
+});
 // Controller for handling the clicks on cards/in-card-currency 
 app.controller('ManageCardPageCtrl', ['', function($scope){
 	

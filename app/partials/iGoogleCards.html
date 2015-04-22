@@ -83,12 +83,29 @@
 				
 			</div>
 		</div>
-		<div class="card col order-6 currency-conversion">
+		<div class="card col order-6 currency-conversion" ng-controller="CurrencyConversionCtrl">
 			<div class="card-wrapper">
-				<input type="number" name="" value="" placeholder="1.00"> <span class="currency">- USD</span>
+				<input 
+					type="number" 
+					name="" 
+					value="{{ calcCurrency(currentCurrency) || 0 }}" 
+					placeholder="1.00" 
+					ng-model="fromAmount" 
+					ng-focus="currentCurrency = 'from';"
+					min="0"
+				>
+				<span class="currency">- USD</span>
 				<br>
 				<br>
-				<input type="number" name="" value="" placeholder=""><span class="currency"> - GBP</span>
+				<input 
+					type="number" 
+					name="" 
+					value="{{ calcCurrency(currentCurrency) || 0 }}" 
+					placeholder="" 
+					ng-model="toAmount" 
+					ng-focus="currentCurrency = 'to'; test()"
+					min="0">
+				<span class="currency"> - GBP</span>
 			</div>
 		</div>
 		<!-- http://designmodo.github.io/Flat-UI/# -->
