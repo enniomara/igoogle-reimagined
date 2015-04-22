@@ -54,6 +54,24 @@ app.controller('StockCtrl', function($scope, $http){
 		}
 	}
 });
+app.controller('BitcoinConversionCtrl', function($scope, $http){
+	$scope.currencyValues = '';
+	$scope.fromAmount = 1;
+	$scope.toAmount = '';
+
+
+	var currencyAPI = 'https://blockchain.info/sv/ticker?cors=true';
+
+	// Make a GET retuest with $http to the currency exchange API
+	$http.get(currencyAPI)
+		.then(function(response) {
+			$scope.currencyValues = response.data;
+			$scope.toAmount = $scope.currencyValues['USD']['15m'] * $scope.fromAmount;
+		});
+
+	
+
+});
 // Controller for handling the clicks on cards/in-card-currency 
 app.controller('ManageCardPageCtrl', ['', function($scope){
 	

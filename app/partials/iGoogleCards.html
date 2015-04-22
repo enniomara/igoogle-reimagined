@@ -45,11 +45,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="card col order-4 btc text-align-center">
+		<div class="card col order-4 btc text-align-center" ng-controller="BitcoinConversionCtrl">
 			<div class="card-wrapper">
 				<img src="http://yearofopensource.net/wp-content/uploads/2012/10/bitcoin.png" alt="BitCoin">
 				<br>
-				<span class="value">1 BTC = $474.91</span>
+				<span class="value">
+					{{fromAmount}} BTC = {{toAmount | currency:"$"}}
+				</span>
 				<br>
 				<span class="difference">
 					50% increase in Bitcoin value since yesterday
