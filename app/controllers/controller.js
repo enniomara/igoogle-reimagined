@@ -15,6 +15,12 @@ app.config(['$routeProvider',function($routeProvider) {
 	
 }]);
 
+// Main controller that stores all variables used by the childcontrollers
+app.controller('MainCtrl', function($scope){
+	// The search keyword that the user enters
+	$scope.searchInput = "";
+});
+
 app.controller('StockCtrl', function($scope, $http){
 	// Is used in select query for API
 	var stockCompanies = [

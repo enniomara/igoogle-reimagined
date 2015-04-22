@@ -11,13 +11,15 @@
 	<script src="app/controllers/controller.js"></script>
 
 </head>
-<body>
+<body ng-controller="MainCtrl as main">
 
 	<nav>
 
 		<div class="search" >
-			<img src="assets/images/header/google-logo.png" alt="">
-			<input type="text">
+			<a href="/#/" title="Go to mainpage">
+				<img src="assets/images/header/google-logo.png" alt="">
+			</a>
+			<input type="text" ng-model="main.searchInput">
 			<button type="submit">
 				<i class="fa fa-search"></i>
 			</button>
