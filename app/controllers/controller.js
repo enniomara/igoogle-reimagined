@@ -253,7 +253,57 @@ app.controller('StockCtrl', function($scope, $http){
 		else if(value > 0){
 			return "stock-positive";
 		}
+app.controller('NewsCtrl',  function($scope, $http){
+
+
+	$scope.imageURL = "";
+	$scope.imageAlt = "";
+	$scope.newsTitle = "";
+	$scope.newsDescription = "";
+
+	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
+	var state = true;
+	var localStorageNews = {};
+	if (localStorage.getItem("news") === null) {
+		state = false;
 	}
+	else {
+		localStorageNews = JSON.parse(localStorage.getItem("news"));
+	}
+
+	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
+	if(state && localStorageNews['lastUpdateTime'] && localStorageNews['lastUpdateTime'] + updateTime > Date.now()){
+		console.log("Reading news data from localStorage");
+		$scope.newsTitle = localStorageNews.newsTitle;
+		$scope.newsDescription = localStorageNews.newsDescription;
+		$scope.currencyValues = localStorageNews['currencyValues'];
+		return;
+	}
+
+
+	var newsAPI = "http://www.svd.se/search.do?q=&timerange=1day&svd_section1_text=Nyheter&output=json&callback=JSON_CALLBACK";
+	// Make a GET retuest with $http to the news API
+	$http.jsonp(newsAPI)
+		.then(function(response) {
+			console.log(response);
+			response.data = response.data.SvDSearch.results.articles[0];
+			// Some news have images some dont. The ones that don't assign a default image
+			$scope.imageURL = response.data.imageURL;
+			$scope.imageAlt = response.data.title;
+			$scope.newsTitle = response.data.title;
+			$scope.newsDescription = response.data.description;
+
+			var localStorageNews = {
+				'imageURL': response.data.imageURL,
+				'imageAlt': response.data.title,
+				'newsTitle': response.data.title,
+				'newsDescription': response.data.description,
+				'lastUpdateTime': Date.now()
+			};
+			localStorage.setItem('news', JSON.stringify(localStorageNews));
+
+		});
+
 });
 app.controller('BitcoinConversionCtrl', function($scope, $http){
 	$scope.currencyValues = '';

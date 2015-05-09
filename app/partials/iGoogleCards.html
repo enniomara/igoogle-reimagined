@@ -9,15 +9,15 @@
 				<span>{{temperature}}&deg;{{unit}} </span>
 			</div>
 		</div>
-		<div class="card col order-2 news">
+		<div class="card col order-2 news" ng-controller="NewsCtrl">
 			<div class="card-wrapper">
 				<div class="news-header-image">
 					<img src="assets/images/news/news-sample-image.png" alt="Article Header Sample" class="news-header-image">
 				</div>
 				<div class="news-content">
-					<span class="news-header-text">Have you googled Obama and achievement?</span>
+					<span class="news-header-text">{{newsTitle}}</span>
 					<br>
-					<span class="news-description">House of cards star kevin spacey is bracing British GQ's March cover. In an interview, he discussed why "Obama" and "Dissapointed" are words that just go together.</span>
+					<span class="news-description">{{newsDescription}}</span>
 				</div>
 
 			</div>
