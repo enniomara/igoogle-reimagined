@@ -1,4 +1,11 @@
-var app = angular.module('searchResults', ['ngRoute'])
+/*Config - start*/
+	// Wait time until cards are updated. Must be in ms
+	var updateTime = 20000;
+
+
+
+
+var app = angular.module('searchResults', ['ngRoute']);
 
 
 app.config(['$routeProvider',function($routeProvider) {
@@ -17,8 +24,31 @@ app.config(['$routeProvider',function($routeProvider) {
 
 // Main controller that stores all variables used by the childcontrollers
 app.controller('MainCtrl', function($scope){
+	/*
+	weather -> array with weather information(e.g. city, temperature, weather type)
+	stock 	-> array with stock information(last update time, it's data)
+	btc 	-> array with lastupdatetime and value
+	conversion -> array with conversionrates(from API)
+	 */
+	var localStorageValues = [
+		'weather',
+		'stock',
+		'btc',
+		'conversion'
+	];
+	// Initializes localstorage-values for the different parts of card-up
+	localStorageValues.forEach(function(currentValue, index, array){
+		if(localStorage.getItem(currentValue) === null){
+			localStorage.setItem(currentValue, "");
+		}
+	});
+
+
+
 	// The search keyword that the user enters
 	$scope.searchInput = "";
+
+
 });
 
 app.controller('WeatherCtrl', function($scope, $http){
@@ -217,6 +247,42 @@ app.controller('WeatherCtrl', function($scope, $http){
 
 
 app.controller('StockCtrl', function($scope, $http){
+	$scope.stockChangeColor = function(value){
+		value = parseFloat(value);
+		if(value < 0){
+			return "stock-negative";
+		}
+		else if(value === 0){
+			return "stock-neutral";
+		}
+		else if(value > 0){
+			return "stock-positive";
+		}
+	};
+
+	$scope.stockValues = [{}];
+
+	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
+	var state = true;
+	var localStorageStock = {};
+	if (localStorage.getItem("stock") === null) {
+		state = false;
+	}
+	else {
+		localStorageStock = JSON.parse(localStorage.getItem("stock"));
+	}
+
+
+	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
+	if(state && localStorageStock['lastUpdateTime'] && localStorageStock['lastUpdateTime'] + updateTime > Date.now()){
+		console.log("Reading stock data from localStorage");
+		$scope.stockValues = localStorageStock['stockValues'];
+
+		return;
+	}
+
+
+
 	// Is used in select query for API
 	var stockCompanies = [
 		"GE",
@@ -230,7 +296,7 @@ app.controller('StockCtrl', function($scope, $http){
 		"RF"
 	];
 
-	$scope.stockValues = [{}];
+
 
 	// Thanks to YQL console(http://developer.yahoo.com/yql/console/?q=select%20Symbol%2CChange%2COpen%20from%20yahoo.finance.quoteslist%20where%20symbol%20%3D%20%22GOOGL%22&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys)
 	var financeAPI = "https://query.yahooapis.com/v1/public/yql?q=select%20Symbol%2CChange%2CLastTradePriceOnly%20from%20yahoo.finance.quoteslist%20where%20symbol%20in%20(%22"+ encodeURIComponent(stockCompanies.toString()) +"%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
@@ -308,6 +374,27 @@ app.controller('BitcoinConversionCtrl', function($scope, $http){
 	$scope.toAmount = '';
 
 
+	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
+	var state = true;
+	var localStorageBTC = {};
+	if (localStorage.getItem("btc") === null) {
+		state = false;
+	}
+	else {
+		localStorageBTC = JSON.parse(localStorage.getItem("btc"));
+	}
+
+	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
+	if(state && localStorageBTC['lastUpdateTime'] && localStorageBTC['lastUpdateTime'] + updateTime > Date.now()){
+		console.log("Reading BTC data from localStorage");
+		$scope.currencyValues = localStorageBTC['currencyValues'];
+		$scope.toAmount = $scope.currencyValues['USD']['15m'] * $scope.fromAmount;
+		return;
+	}
+
+
+
+
 	var currencyAPI = 'https://blockchain.info/sv/ticker?cors=true';
 
 	// Make a GET retuest with $http to the currency exchange API
@@ -368,6 +455,24 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 	// Stores all exchange rates
 	$scope.currencyValues = "";
 
+
+	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
+	var state = true;
+	var localStorageConversion = {};
+	if (localStorage.getItem("conversion") === null) {
+		state = false;
+	}
+	else {
+		localStorageConversion = JSON.parse(localStorage.getItem("conversion"));
+	}
+
+
+	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
+	if(state && localStorageConversion['lastUpdateTime'] && localStorageConversion['lastUpdateTime'] + updateTime > Date.now()){
+		console.log("Reading currency data from localStorage");
+		$scope.currencyValues = localStorageConversion['currencyValues'];
+		return;
+	}
 
 
 
