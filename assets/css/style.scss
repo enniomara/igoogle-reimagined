@@ -6,6 +6,17 @@ $drop-shadow-color: rgba(0, 0, 0, 0.5);
 $card-background-color: #fcfcfc;
 $card-text-inner-color: #878787;
 
+@font-face {
+    font-family: 'MeteoconsRegular';
+    src: url('../fonts/meteocons/meteocons-webfont.eot');
+    src: url('../fonts/meteocons/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/meteocons/meteocons-webfont.woff') format('woff'),
+         url('../fonts/meteocons/meteocons-webfont.ttf') format('truetype'),
+         url('../fonts/meteocons/meteocons-webfont.svg#MeteoconsRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 @mixin vertical-align {
   position: relative;
   top: 50%;
@@ -154,7 +165,16 @@ main {
 		margin: 20px 15px;
 		display: inline-block;
 
-		&.weather{	
+		&.weather{
+			.icon{
+				font-size: 500%;
+				line-height: 0;
+				color: $card-text-inner-color;
+			}
+			.icon:before{
+				font-family: 'MeteoconsRegular';
+				content: attr(data-icon);
+			}
 			span{
 				font-size: 44px;
 				color: $card-text-inner-color;
