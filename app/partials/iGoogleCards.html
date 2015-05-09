@@ -1,12 +1,12 @@
 <div class="wrapper mainpage" >
 	<div class="flex-container">
-		<div class="card col order-1 weather text-align-center">
+		<div class="card col order-1 weather text-align-center" ng-controller="WeatherCtrl">
 			<div class="card-wrapper">
-				<img src="assets/images/weather/sunny.png" alt="Sunny">
+				<i class="icon" data-icon="{{weatherCodes[0][codeWeather]}}" title="{{condition}}"></i>
 				<br>
-				<span>Lund</span>
+				<span>{{locationCity}}</span>
 				<br>
-				<span>-4 C</span>
+				<span>{{temperature}}&deg;{{unit}} </span>
 			</div>
 		</div>
 		<div class="card col order-2 news">

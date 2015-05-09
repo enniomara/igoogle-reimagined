@@ -21,6 +21,201 @@ app.controller('MainCtrl', function($scope){
 	$scope.searchInput = "";
 });
 
+app.controller('WeatherCtrl', function($scope, $http){
+	$scope.locationCity = "";
+	$scope.temperature = "";
+	$scope.codeWeather = "";
+	$scope.condition = "";
+	$scope.unit = "";
+
+	// https://developer.yahoo.com/weather/documentation.html
+	$scope.weatherCodes = [{
+		// tornado
+		0: "F",
+		// tropical storm
+		1 :"F",
+		// hurricane
+		2 :"F",
+		// severe thunderstorms
+		3 :"O",
+		// thunderstorms
+		4 :"P",
+		// mixed rain and snow
+		5 :"X",
+		// mixed rain and sleet
+		6 :"X",
+		// mixed snow and sleet
+		7 :"X",
+		// freezing drizzle
+		8 :"X",
+		// drizzle
+		9 :"Q",
+		// freezing rain
+		10 :"X",
+		// showers
+		11 :"R",
+		// showers
+		12 :"R",
+		// snow flurries
+		13 :"U",
+		// light snow showers
+		14 :"U",
+		// blowing snow
+		15 :"U",
+		// snow
+		16 :"W",
+		// hail
+		17 :"X",
+		// sleet
+		18 :"X",
+		// dust
+		19 :"J",
+		// foggy
+		20 :"M",
+		// haze
+		21 :"J",
+		// smoky
+		22 :"M",
+		// blustery
+		23 :"F",
+		// windy
+		24 :"F",
+		// cold
+		25 :"G",
+		// cloudy
+		26 :"Y",
+		// mostly cloudy (night)
+		27 :"I",
+		// mostly cloudy (day)
+		28 :"H",
+		// partly cloudy (night)
+		29 :"E",
+		// partly cloudy (day)
+		30 :"H",
+		// clear (night)
+		31 :"C",
+		// sunny
+		32 :"B",
+		// fair (night)
+		33 :"C",
+		// fair (day)
+		34 :"B",
+		// mixed rain and hail
+		35 :"X",
+		// hot
+		36 :"B",
+		// isolated thunderstorms
+		37 :"O",
+		// scattered thunderstorms
+		38 :"O",
+		// scattered thunderstorms
+		39 :"O",
+		// scattered showers
+		40: "R",
+		// heavy snow
+		41 :"W",
+		// scattered snow showers
+		42 :"U",
+		// heavy snow
+		43 :"W",
+		// partly cloudy
+		44 :"H",
+		// thundershowers
+		45 :"O",
+		// snow showers
+		46 :"W",
+		// isolated thundershowers
+		47 :"O",
+		// not available
+		3200: ")",
+
+	}];
+
+
+	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
+	var state = true;
+	var localStorageWeather = {};
+	if (localStorage.getItem("weather") === null) {
+		state = false;
+	}
+	else {
+		localStorageWeather = JSON.parse(localStorage.getItem("weather"));
+	}
+
+
+	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
+	if(state && localStorageWeather['lastUpdateTime'] && localStorageWeather['lastUpdateTime'] + updateTime > Date.now()){
+		console.log("Reading weather data from localStorage");
+		$scope.locationCity = localStorageWeather['locationCity'];
+		$scope.temperature = localStorageWeather['temperature'];
+		$scope.codeWeather = localStorageWeather['codeWeather'];
+		$scope.condition = localStorageWeather['condition'];
+		$scope.unit = localStorageWeather['unit'];
+		return;
+	}
+	/*
+	weather => locationCity
+				temperature
+				codeWeather
+				condition
+				unit
+				lastUpdateTime
+	*/
+
+
+
+
+
+	// Here we get the position from the built in feature of the browser
+	navigator.geolocation.getCurrentPosition(success, error);
+
+	function success(response){
+		var coordinates = response.coords.latitude + "," + response.coords.longitude;
+		var woeidAPI = "http://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent('SELECT*FROM geo.placefinder WHERE text="'+coordinates+'" AND gflags="R"') + "&format=json";
+
+		console.log(woeidAPI);
+		// Make a GET retuest with $http to the location API to get the woeid(it is required by the weather API)
+		$http.get(woeidAPI)
+			.then(function(response) {
+				$scope.locationCity = response.data.query.results.Result.city;
+				console.log(response);
+				var weatherAPI = "https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid=" + response.data.query.results.Result.woeid + ' and u="c"' + "&format=json";
+
+				// Make another GET request to get the weather data
+				$http.get(weatherAPI)
+					.then(function(response2) {
+						var localStorageData = {
+							"locationCity": response.data.query.results.Result.city,
+							"temperature": response2.data.query.results.channel.item.condition.temp,
+							"codeWeather": response2.data.query.results.channel.item.condition.code,
+							"condition": response2.data.query.results.channel.item.condition.text,
+							"unit": response2.data.query.results.channel.units.temperature,
+							"lastUpdateTime": Date.now()
+						};
+						localStorage.setItem('weather', JSON.stringify(localStorageData));
+
+						$scope.temperature = response2.data.query.results.channel.item.condition.temp;
+						$scope.codeWeather = response2.data.query.results.channel.item.condition.code;
+						$scope.condition = response2.data.query.results.channel.item.condition.text;
+						$scope.unit =  response2.data.query.results.channel.units.temperature;
+
+						console.log(response2);
+					});
+			});
+
+		console.log("success");
+		console.log(response);
+		/*getWeatherData(response.coords)*/
+	}
+
+	function error(response){
+		alert("error" + response);
+	}
+
+
+});
+
+
 app.controller('StockCtrl', function($scope, $http){
 	// Is used in select query for API
 	var stockCompanies = [
