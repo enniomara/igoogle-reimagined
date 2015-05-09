@@ -402,11 +402,7 @@ app.controller('BitcoinConversionCtrl', function($scope, $http){
 		.then(function(response) {
 			$scope.currencyValues = response.data;
 			$scope.toAmount = $scope.currencyValues['USD']['15m'] * $scope.fromAmount;
-		});
 
-	
-
-});
 			var localStorageBTCValues = {
 				'currencyValues': response.data,
 				'toAmount': $scope.toAmount,
@@ -488,10 +484,10 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 		$scope.currencyValues = response.data;
 	});
 });
-// Controller for handling the clicks on cards/in-card-currency 
-app.controller('ManageCardPageCtrl', ['', function($scope){
-	
-}]);
+// Controller for handling the clicks on cards/in-card-currency
+app.controller('ManageCardPageCtrl', function($scope){
+
+});
 
 // Controller for listing search results
 app.controller('ListSearchResultsCtrl', function($scope){
