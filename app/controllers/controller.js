@@ -320,23 +320,21 @@ app.controller('BitcoinConversionCtrl', function($scope, $http){
 	
 
 });
+			var localStorageBTCValues = {
+				'currencyValues': response.data,
+				'toAmount': $scope.toAmount,
+				'lastUpdateTime': Date.now()
+			};
+			localStorage.setItem('btc', JSON.stringify(localStorageBTCValues));
+
+		});
+
+
+
+});
+
 // This controller handles the currency conversion(uses the conversion rate)
 app.controller('CurrencyConversionCtrl', function($scope, $http){
-	$scope.fromAmount;
-	$scope.toAmount;
-	$scope.currentCurrency = 'from';
-	// Stores all exchange rates
-	$scope.currencyValues = "";
-
-	var exchangeURL = "http://api.fixer.io/latest?symbols=USD,GBP";
-
-	// Make a GET retuest with $http to the currency exchange API
-	$http.get(exchangeURL).then(function(response) {
-		$scope.currencyValues = response.data;
-	});
-
-
-
 	/**
 	 * Is called when the value of currency input is changed. This revalidates the inputs with the proper exchange rate
 	 *
@@ -364,7 +362,26 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 		console.log($scope.currencyValues.rates.USD * $scope.currencyValues.rates.GBP);
 	};
 
+	$scope.fromAmount = "";
+	$scope.toAmount = "";
+	$scope.currentCurrency = 'from';
+	// Stores all exchange rates
+	$scope.currencyValues = "";
 
+
+
+
+	var exchangeURL = "http://api.fixer.io/latest?symbols=USD,GBP";
+
+	// Make a GET retuest with $http to the currency exchange API
+	$http.get(exchangeURL).then(function(response) {
+		var localStorageCurrencyValues = {
+			'currencyValues': response.data,
+			'lastUpdateTime': Date.now()
+		};
+		localStorage.setItem('conversion', JSON.stringify(localStorageCurrencyValues));
+		$scope.currencyValues = response.data;
+	});
 });
 // Controller for handling the clicks on cards/in-card-currency 
 app.controller('ManageCardPageCtrl', ['', function($scope){

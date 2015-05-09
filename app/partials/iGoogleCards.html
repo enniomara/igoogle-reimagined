@@ -85,24 +85,24 @@
 		</div>
 		<div class="card col order-6 currency-conversion" ng-controller="CurrencyConversionCtrl">
 			<div class="card-wrapper">
-				<input 
-					type="number" 
-					name="" 
-					value="{{ calcCurrency(currentCurrency) || 0 }}" 
-					placeholder="1.00" 
-					ng-model="fromAmount" 
+				<input
+					type="number"
+					name=""
+					value="{{ calcCurrency(currentCurrency) || 0 }}"
+					placeholder="1.00"
+					ng-model="fromAmount"
 					ng-focus="currentCurrency = 'from';"
 					min="0"
 				>
 				<span class="currency">- USD</span>
 				<br>
 				<br>
-				<input 
-					type="number" 
-					name="" 
-					value="{{ calcCurrency(currentCurrency) || 0 }}" 
-					placeholder="" 
-					ng-model="toAmount" 
+				<input
+					type="number"
+					name=""
+					value="{{ calcCurrency(currentCurrency) || 0 }}"
+					placeholder=""
+					ng-model="toAmount"
 					ng-focus="currentCurrency = 'to'; test()"
 					min="0">
 				<span class="currency"> - GBP</span>
