@@ -15,14 +15,17 @@
 
 	<nav>
 
-		<div class="search" >
+		<div class="search" ng-controller="SearchCtrl">
 			<a href="/#/" title="Go to mainpage">
 				<img src="assets/images/header/google-logo.png" alt="">
 			</a>
-			<input type="text" ng-model="main.searchInput">
-			<button type="submit">
-				<i class="fa fa-search"></i>
-			</button>
+			<form method="get" accept-charset="utf-8" ng-submit="onFormSubmit()">
+				<input type="text" id="searchTerm">
+				<button type="submit">
+					<i class="fa fa-search"></i>
+				</button>
+			</form>
+			
 		</div>
 		
 	</nav>
