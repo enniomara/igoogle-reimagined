@@ -319,7 +319,7 @@ app.controller('StockCtrl', function($scope, $http){
 app.controller('NewsCtrl',  function($scope, $http){
 
 
-	$scope.imageURL = "";
+	$scope.imageURL = "assets/images/news/news-sample-image.png";
 	$scope.imageAlt = "";
 	$scope.newsTitle = "";
 	$scope.newsDescription = "";
@@ -340,6 +340,7 @@ app.controller('NewsCtrl',  function($scope, $http){
 		$scope.newsTitle = localStorageNews.newsTitle;
 		$scope.newsDescription = localStorageNews.newsDescription;
 		$scope.currencyValues = localStorageNews['currencyValues'];
+		$scope.imageURL = localStorageNews['imageURL'];
 		return;
 	}
 
@@ -349,18 +350,36 @@ app.controller('NewsCtrl',  function($scope, $http){
 	$http.jsonp(newsAPI)
 		.then(function(response) {
 			console.log(response);
-			response.data = response.data.SvDSearch.results.articles[0];
-			// Some news have images some dont. The ones that don't assign a default image
-			$scope.imageURL = response.data.imageURL;
-			$scope.imageAlt = response.data.title;
-			$scope.newsTitle = response.data.title;
-			$scope.newsDescription = response.data.description;
+
+			var responseData = response.data.SvDSearch.results.articles[0];
+			// Choose the first article that has an image
+			for (var i = 0; i <= response.data.SvDSearch.results.articles.length -1 ; i++) {
+				if (typeof response.data.SvDSearch.results.articles[i].imageUrl != "undefined") {
+					responseData = response.data.SvDSearch.results.articles[i];
+					$scope.imageURL = responseData.imageUrl;
+					break;
+				};
+			};
+
+
+			
+			var tempDescription = "";
+			// Limits the description to 150 characters(only approx 150 W:s can fit in the description div). The first 3 characters are cut out because they are useless
+			for (var i = 3; i < 150; i++) {
+				tempDescription += responseData.description[i];
+			};
+			tempDescription += "...";
+
+			$scope.newsDescription = tempDescription;
+			$scope.imageAlt = $scope.newsTitle = responseData.title;
+			
+			
 
 			var localStorageNews = {
-				'imageURL': response.data.imageURL,
-				'imageAlt': response.data.title,
-				'newsTitle': response.data.title,
-				'newsDescription': response.data.description,
+				'imageURL': responseData.imageUrl,
+				'imageAlt': responseData.title,
+				'newsTitle': responseData.title,
+				'newsDescription': tempDescription,
 				'lastUpdateTime': Date.now()
 			};
 			localStorage.setItem('news', JSON.stringify(localStorageNews));
