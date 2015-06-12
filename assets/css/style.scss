@@ -7,17 +7,18 @@ $card-background-color: #fcfcfc;
 $card-text-inner-color: #878787;
 
 @font-face {
-    font-family: 'MeteoconsRegular';
-    src: url('../fonts/meteocons/meteocons-webfont.eot');
-    src: url('../fonts/meteocons/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/meteocons/meteocons-webfont.woff') format('woff'),
-         url('../fonts/meteocons/meteocons-webfont.ttf') format('truetype'),
-         url('../fonts/meteocons/meteocons-webfont.svg#MeteoconsRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	 font-family: 'MeteoconsRegular';
+	 src: url('../fonts/meteocons/meteocons-webfont.eot');
+	 src: url('../fonts/meteocons/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
+			url('../fonts/meteocons/meteocons-webfont.woff') format('woff'),
+			url('../fonts/meteocons/meteocons-webfont.ttf') format('truetype'),
+			url('../fonts/meteocons/meteocons-webfont.svg#MeteoconsRegular') format('svg');
+	 font-weight: normal;
+	 font-style: normal;
 }
 
 @mixin vertical-align {
+
   position: relative;
   top: 50%;
   -webkit-transform: translateY(-50%);
@@ -25,10 +26,10 @@ $card-text-inner-color: #878787;
   transform: translateY(-50%);
 }
 
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/ 
+/* http://meyerweb.com/eric/tools/css/reset/
+	v2.0 | 20110126
+	License: none (public domain)
+*/
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -39,8 +40,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby , section, summary,
 time, mark, audio, video {
 	margin: 0;
@@ -51,15 +52,12 @@ time, mark, audio, video {
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
 	line-height: 1;
-}
-ol, ul {
-	list-style: none;
 }
 blockquote, q {
 	quotes: none;
@@ -81,11 +79,21 @@ table {
 }
 
 html, body{
-	height: 100%;
 	background: $background-main;
 	font-family: "Open Sans", Arial;
 }
 
+
+a {
+	color: #37383A;
+	text-decoration: none;
+}
+a:active, a:hover {
+  outline: 0;
+}
+a:focus, a:hover {
+  text-decoration: underline;
+}
 
 .wrapper{
 	width: 95%;
@@ -98,7 +106,7 @@ nav{
 	width: 100%;
 	background-color: $background-nav;
 
-	
+
 	.search{
 		padding: 55px 0;
 		text-align: center;
@@ -160,11 +168,25 @@ main {
 	min-height: 100%;
 	position: relative;
 
+	article.wrapper{
+		line-height: 1.2;
+		margin-top: 20px;
+		padding: 5px 15px 15px 15px;
+		h1{
+			font-size: 42px;
+			text-align: center;
+		}
+		ul{
+			padding-left: 30px;
+		}
+	}
+
 	.mainpage .card{
 		width: 250px;
 		height: 260px;
 		margin: 20px 15px;
 		display: inline-block;
+		position: relative;
 
 		&.weather{
 			.icon{
@@ -180,6 +202,18 @@ main {
 				font-size: 44px;
 				color: $card-text-inner-color;
 			}
+			.weather-update{
+				font-size: 11px;
+				position: absolute;
+				bottom: 15px;
+				right: 15px;
+				display: none;
+			}
+			&:hover .weather-update{
+				display: block;
+			}
+
+
 		}
 		&.news{
 			&>div{
@@ -189,6 +223,7 @@ main {
 				padding: 5px 15px 15px 15px;
 				height: 55%;
 				overflow: hidden;
+				position: relative;
 			}
 			.news-header-image{
 				height: 45%;
@@ -200,9 +235,12 @@ main {
 			.news-header-text{
 				font-size: 16px;
 			}
-			.news-description{
+			.news-misc{
 				color: $card-text-inner-color;
 				font-size: 12px;
+				position: absolute;
+				bottom: 15px;
+				text-align: right;
 			}
 		}
 		&.stock{
@@ -238,6 +276,16 @@ main {
 				width: 90px;
 				height: 90px;
 			}
+			.btc-update{
+				font-size: 11px;
+				position: absolute;
+				bottom: 15px;
+				right: 15px;
+				display: none;
+			}
+			&:hover .btc-update{
+				display: block;
+			}
 		}
 		&.products{
 			&>div{
@@ -259,7 +307,7 @@ main {
 				color: $card-text-inner-color;
 				.product-name{
 					font-size: 25px;
-					
+
 				}
 				.product-availability{
 					font-size: 12px;
@@ -267,7 +315,7 @@ main {
 			}
 			.product-view{
 				height: 25%;
-				
+
 				.fa-arrow-right{
 					line-height: 1.9;
 				}
@@ -295,6 +343,18 @@ main {
 				width: 50%;
 			}
 		}
+
+		.error{
+			text-align: center;
+			color: $card-text-inner-color;
+			.error-message{
+				font-size: 14px;
+			}
+			span.fa-stack {
+			  font-size: 44px;
+			}
+		}
+
 		.card-wrapper{
 			@include vertical-align;
 		}
@@ -306,7 +366,7 @@ main {
 		flex-flow: row wrap;
 	}
 
-	
+
 	@for $i from 1 through 6{
 
 		.order-#{$i}{
@@ -316,6 +376,10 @@ main {
 
 }
 
+footer{
+	text-align: center;
+	margin: 15px 0;
+}
 
 .grid{
 	/* Clearfix because it has no height because of float on children
@@ -323,10 +387,10 @@ main {
 	 */
 	&:after{
 		content: " ";
-		display: block; 
-		height: 0; 
+		display: block;
+		height: 0;
 		clear: both;
-	} 
+	}
 	/* Column design */
 	.col-1_3{
 		width: 33%;
@@ -346,7 +410,17 @@ main {
 
 /* Medium screens */
 @media all and (max-width: 620px) {
-  .col{
-	flex: 0 0 100%;
-  }
+	.col{
+		flex: 0 0 100%;
+	}
+}
+@media all and (min-width: 480px) and (max-width: 619px){
+	.mainpage.wrapper{
+		width: 60%;
+	}
+}
+@media all and (min-width: 360px) and (max-width: 479px){
+	.mainpage.wrapper{
+		width: 80%;
+	}
 }

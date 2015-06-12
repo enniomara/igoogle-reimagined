@@ -1,6 +1,8 @@
 /*Config - start*/
-	// Wait time until cards are updated. Must be in ms
-	var updateTime = 20000;
+	// Wait time until cards are updated. Must be in ms(default = 10min)
+	var updateTime = 600000;
+	// This has to bee larger because import.io takes longer time to respond
+	var newsUpdateTime = 1800000;
 
 
 
@@ -12,6 +14,10 @@ app.config(function($routeProvider) {
 	$routeProvider.
 		when('/', {
 			templateUrl: 'app/partials/iGoogleCards.html',
+			controller: 'ManageCardPageCtrl'
+		}).
+		when('/om', {
+			templateUrl: 'app/partials/om.html',
 			controller: 'ManageCardPageCtrl'
 		}).
 		otherwise('/');
@@ -37,7 +43,8 @@ app.controller('MainCtrl', function($scope){
 		'weather',
 		'stock',
 		'btc',
-		'conversion'
+		'conversion',
+		'news',
 	];
 	// Initializes localstorage-values for the different parts of card-up
 	localStorageValues.forEach(function(currentValue, index, array){
@@ -45,14 +52,21 @@ app.controller('MainCtrl', function($scope){
 			localStorage.setItem(currentValue, "");
 		}
 	});
+
 });
 
 app.controller('WeatherCtrl', function($scope, $http){
+	// If this is set to false show the error message to allow GEOlocation API
+	$scope.GeoApiAccess = true;
+
+	$scope.GeoApiLoading = true;
+
 	$scope.locationCity = "";
 	$scope.temperature = "";
 	$scope.codeWeather = "";
 	$scope.condition = "";
 	$scope.unit = "";
+	$scope.lastUpdateTime = "";
 
 	// https://developer.yahoo.com/weather/documentation.html
 	$scope.weatherCodes = [{
@@ -158,10 +172,11 @@ app.controller('WeatherCtrl', function($scope, $http){
 	}];
 
 
+
 	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
 	var state = true;
 	var localStorageWeather = {};
-	if (localStorage.getItem("weather") === null) {
+	if (localStorage.getItem("weather") === "") {
 		state = false;
 	}
 	else {
@@ -171,12 +186,14 @@ app.controller('WeatherCtrl', function($scope, $http){
 
 	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
 	if(state && localStorageWeather['lastUpdateTime'] && localStorageWeather['lastUpdateTime'] + updateTime > Date.now()){
+		$scope.GeoApiAccess = false;
 		console.log("Reading weather data from localStorage");
 		$scope.locationCity = localStorageWeather['locationCity'];
 		$scope.temperature = localStorageWeather['temperature'];
 		$scope.codeWeather = localStorageWeather['codeWeather'];
 		$scope.condition = localStorageWeather['condition'];
 		$scope.unit = localStorageWeather['unit'];
+		$scope.lastUpdateTime = timeConverter(parseInt(localStorageWeather['lastUpdateTime']));
 		return;
 	}
 	/*
@@ -196,6 +213,7 @@ app.controller('WeatherCtrl', function($scope, $http){
 	navigator.geolocation.getCurrentPosition(success, error);
 
 	function success(response){
+		$scope.GeoApiAccess = false;
 		var coordinates = response.coords.latitude + "," + response.coords.longitude;
 		var woeidAPI = "http://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent('SELECT*FROM geo.placefinder WHERE text="'+coordinates+'" AND gflags="R"') + "&format=json";
 
@@ -210,6 +228,7 @@ app.controller('WeatherCtrl', function($scope, $http){
 				// Make another GET request to get the weather data
 				$http.get(weatherAPI)
 					.then(function(response2) {
+						var date = timeConverter(parseInt(Date.now()));
 						var localStorageData = {
 							"locationCity": response.data.query.results.Result.city,
 							"temperature": response2.data.query.results.channel.item.condition.temp,
@@ -224,6 +243,8 @@ app.controller('WeatherCtrl', function($scope, $http){
 						$scope.codeWeather = response2.data.query.results.channel.item.condition.code;
 						$scope.condition = response2.data.query.results.channel.item.condition.text;
 						$scope.unit =  response2.data.query.results.channel.units.temperature;
+						$scope.lastUpdateTime = date;
+
 
 						console.log(response2);
 					});
@@ -235,7 +256,7 @@ app.controller('WeatherCtrl', function($scope, $http){
 	}
 
 	function error(response){
-		alert("error" + response);
+		$scope.GeoApiLoading = false;
 	}
 
 
@@ -261,7 +282,7 @@ app.controller('StockCtrl', function($scope, $http){
 	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
 	var state = true;
 	var localStorageStock = {};
-	if (localStorage.getItem("stock") === null) {
+	if (localStorage.getItem("stock") === "") {
 		state = false;
 	}
 	else {
@@ -313,86 +334,94 @@ app.controller('StockCtrl', function($scope, $http){
 
 });
 app.controller('NewsCtrl',  function($scope, $http){
-
+	$scope.newsLoading = true;
 
 	$scope.imageURL = "assets/images/news/news-sample-image.png";
 	$scope.imageAlt = "";
 	$scope.newsTitle = "";
-	$scope.newsDescription = "";
+	$scope.newsTitleUrl = "";
+	$scope.author = "";
+	$scope.date = "";
 
 	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
 	var state = true;
 	var localStorageNews = {};
-	if (localStorage.getItem("news") === null) {
+	if (localStorage.getItem("news") === "") {
 		state = false;
 	}
 	else {
 		localStorageNews = JSON.parse(localStorage.getItem("news"));
 	}
 
-	// If there is a weather[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
-	if(state && localStorageNews['lastUpdateTime'] && localStorageNews['lastUpdateTime'] + updateTime > Date.now()){
+	// If there is a news[lastupdatetime] value and if the cards should not be updated yet, get the data from localStorage
+	if(state && localStorageNews['lastUpdateTime'] && localStorageNews['lastUpdateTime'] + newsUpdateTime > Date.now()){
+		$scope.newsLoading = false;
 		console.log("Reading news data from localStorage");
+		console.log(localStorageNews);
 		$scope.newsTitle = localStorageNews.newsTitle;
-		$scope.newsDescription = localStorageNews.newsDescription;
 		$scope.currencyValues = localStorageNews['currencyValues'];
 		$scope.imageURL = localStorageNews['imageURL'];
+		$scope.date = localStorageNews['article_date'];
+		$scope.author = localStorageNews['author'];
+		$scope.date = localStorageNews['date'];
+		$scope.newsTitleUrl = localStorageNews['newsTitleUrl'];
 		return;
 	}
 
 
-	var newsAPI = "http://www.svd.se/search.do?q=&timerange=1day&svd_section1_text=Nyheter&output=json&callback=JSON_CALLBACK";
+	// var newsAPI = "http://www.svd.se/search.do?q=&timerange=1day&svd_section1_text=Nyheter&output=json&callback=JSON_CALLBACK";
+	var newsAPI = "https://api.import.io/store/data/24c2c0b1-2f90-4b8f-8853-9928d79d168a/_query?input/webpage/url=http%3A%2F%2Fuk.businessinsider.com%2Ffinance&_user=b7d849d5-dbf3-4d04-8d41-a6433065a501&_apikey=b7d849d5-dbf3-4d04-8d41-a6433065a501%3ARRSQkEPuLQoXPpSfvJxwQV2hNFa%2Bsa9Qnwxvhh52EXl69j4uO4cpkpPQYxWDqoXoZBIlmq1VT2rhMsxWI9ySDQ%3D%3D";
 	// Make a GET retuest with $http to the news API
-	$http.jsonp(newsAPI)
+	$http.get(newsAPI)
 		.then(function(response) {
+			$scope.newsLoading = false;
 			console.log(response);
 
-			var responseData = response.data.SvDSearch.results.articles[0];
-			// Choose the first article that has an image
-			for (var i = 0; i <= response.data.SvDSearch.results.articles.length -1 ; i++) {
-				if (typeof response.data.SvDSearch.results.articles[i].imageUrl != "undefined") {
-					responseData = response.data.SvDSearch.results.articles[i];
-					$scope.imageURL = responseData.imageUrl;
-					break;
-				};
-			};
+			// var responseData = response.data.SvDSearch.results.articles[0];
+			var responseData = response.data.results[0];
+			$scope.imageURL = responseData.article_image;
+			$scope.imageAlt = $scope.newsTitle = responseData.article_header;
+			$scope.author = responseData.article_author;
+			$scope.date = responseData.article_date;
+			$scope.newsTitleUrl = responseData.article_header_link;
 
 
-			
-			var tempDescription = "";
-			// Limits the description to 150 characters(only approx 150 W:s can fit in the description div). The first 3 characters are cut out because they are useless
-			for (var i = 3; i < 150; i++) {
-				tempDescription += responseData.description[i];
-			};
-			tempDescription += "...";
-
-			$scope.newsDescription = tempDescription;
-			$scope.imageAlt = $scope.newsTitle = responseData.title;
-			
-			
-
-			var localStorageNews = {
-				'imageURL': responseData.imageUrl,
-				'imageAlt': responseData.title,
-				'newsTitle': responseData.title,
-				'newsDescription': tempDescription,
-				'lastUpdateTime': Date.now()
-			};
+			var localStorageNews = {};
+			for (var i = 0; i < response.data.results.length; i++) {
+				var responseDataArray = response.data.results[i]
+				localStorageNews[i] = {
+					'imageURL': responseDataArray.article_image,
+					'imageAlt': responseDataArray.article_header,
+					'newsTitle': responseDataArray.article_header,
+					'newsTitleUrl': responseDataArray.article_header_link,
+					'author': responseDataArray.article_author,
+					'date': responseDataArray.article_date,
+					'lastUpdateTime': Date.now()
+				}
+			}
+			// var localStorageNews = {
+			// 	'imageURL': responseData.article_image,
+			// 	'imageAlt': responseData.article_header,
+			// 	'newsTitle': responseData.article_header,
+			// 	'lastUpdateTime': Date.now()
+			// };
 			localStorage.setItem('news', JSON.stringify(localStorageNews));
 
 		});
 
 });
+
 app.controller('BitcoinConversionCtrl', function($scope, $http){
 	$scope.currencyValues = '';
 	$scope.fromAmount = 1;
 	$scope.toAmount = '';
+	$scope.lastUpdateTime = "";
 
 
 	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
 	var state = true;
 	var localStorageBTC = {};
-	if (localStorage.getItem("btc") === null) {
+	if (localStorage.getItem("btc") === "") {
 		state = false;
 	}
 	else {
@@ -404,6 +433,7 @@ app.controller('BitcoinConversionCtrl', function($scope, $http){
 		console.log("Reading BTC data from localStorage");
 		$scope.currencyValues = localStorageBTC['currencyValues'];
 		$scope.toAmount = $scope.currencyValues['USD']['15m'] * $scope.fromAmount;
+		$scope.lastUpdateTime = timeConverter(parseInt(localStorageBTC['lastUpdateTime']));
 		return;
 	}
 
@@ -417,7 +447,7 @@ app.controller('BitcoinConversionCtrl', function($scope, $http){
 		.then(function(response) {
 			$scope.currencyValues = response.data;
 			$scope.toAmount = $scope.currencyValues['USD']['15m'] * $scope.fromAmount;
-
+			$scope.lastUpdateTime = timeConverter(parseInt(Date.now()));
 			var localStorageBTCValues = {
 				'currencyValues': response.data,
 				'toAmount': $scope.toAmount,
@@ -444,11 +474,11 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 		if($scope.currencyValues !== ""){
 			switch(amount){
 				case 'to':
-					$scope.fromAmount = $scope.toAmount / $scope.currencyValues.rates.GBP * $scope.currencyValues.rates.USD;
+					$scope.fromAmount = Math.round(($scope.toAmount / $scope.currencyValues.rates.GBP * $scope.currencyValues.rates.USD)*100)/100;
 					//$scope.toAmount * 0.5;
 					break;
 				case 'from':
-					$scope.toAmount = $scope.fromAmount / $scope.currencyValues.rates.USD * $scope.currencyValues.rates.GBP;
+					$scope.toAmount = Math.round(($scope.fromAmount / $scope.currencyValues.rates.USD * $scope.currencyValues.rates.GBP) * 100 )/100;
 					break;
 			}
 		}
@@ -460,8 +490,8 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 		console.log($scope.currencyValues.rates.USD * $scope.currencyValues.rates.GBP);
 	};
 
-	$scope.fromAmount = "";
-	$scope.toAmount = "";
+	$scope.fromAmount = 1;
+	$scope.toAmount;
 	$scope.currentCurrency = 'from';
 	// Stores all exchange rates
 	$scope.currencyValues = "";
@@ -470,7 +500,7 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 	// If the localstorage json can't be parsed, set state to false, which does not run the if statement below
 	var state = true;
 	var localStorageConversion = {};
-	if (localStorage.getItem("conversion") === null) {
+	if (localStorage.getItem("conversion") === "") {
 		state = false;
 	}
 	else {
@@ -503,3 +533,16 @@ app.controller('CurrencyConversionCtrl', function($scope, $http){
 app.controller('ManageCardPageCtrl', function($scope){
 
 });
+
+function timeConverter(UNIX_timestamp){
+	var a = new Date(UNIX_timestamp);
+	var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var year = a.getFullYear();
+	var month = months[a.getMonth()];
+	var date = a.getDate();
+	var hour = a.getHours();
+	var min = a.getMinutes();
+	var sec = a.getSeconds();
+	var time = month + ". " + date + ',' + year + ' ' + hour + ':' + min;
+	return time;
+}

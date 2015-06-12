@@ -1,28 +1,67 @@
 <div class="wrapper mainpage" >
 	<div class="flex-container">
-		<div class="card col order-1 weather text-align-center" ng-controller="WeatherCtrl">
-			<div class="card-wrapper">
-				<i class="icon" data-icon="{{weatherCodes[0][codeWeather]}}" title="{{condition}}"></i>
-				<br>
-				<span>{{locationCity}}</span>
-				<br>
-				<span>{{temperature}}&deg;{{unit}} </span>
-			</div>
-		</div>
-		<div class="card col order-2 news" ng-controller="NewsCtrl">
-			<div class="card-wrapper">
-				<div class="news-header-image">
-					<img src="{{imageURL}}" alt="{{imageAlt}}" class="news-header-image">
-				</div>
-				<div class="news-content">
-					<span class="news-header-text">{{newsTitle}}</span>
+		<div class="card col order-1 weather text-align-center" data-ng-controller="WeatherCtrl">
+			<div class="card-wrapper"  	>
+				<div data-ng-hide="GeoApiAccess">
+					<i class="icon" data-icon="{{weatherCodes[0][codeWeather]}}" title="{{condition}}"></i>
 					<br>
-					<span class="news-description">{{newsDescription}}</span>
+					<span>{{locationCity}}</span>
+					<br>
+					<span>{{temperature}}&deg;{{unit}} </span>
+
+				</div>
+				<div class="error" data-ng-show="GeoApiAccess">
+					<div data-ng-show="GeoApiLoading">
+						<span class="fa-stack fa-lg">
+							<i class="fa fa-circle-o-notch fa-spin fa-stack-1x"></i>
+
+						</span>
+						<br>
+						<span class="error-message">Loading</span>
+					</div>
+					<div data-ng-hide="GeoApiLoading">
+						<span class="fa-stack fa-lg">
+							<i class="fa fa-circle-o fa-stack-2x"></i>
+							<i class="fa fa-exclamation fa-stack-1x"></i>
+						</span>
+						<br>
+						<span class="error-message">Make sure to allow location sharing. We use this to deliver weather reports.</span>
+					</div>
+
 				</div>
 
 			</div>
+			<span class="weather-update" data-ng-hide="GeoApiAccess">Last updated: {{lastUpdateTime}}</span>
 		</div>
-		<div class="card col order-3 stock" ng-controller="StockCtrl">
+		<div class="card col order-2 news" data-ng-controller="NewsCtrl">
+			<div class="card-wrapper">
+				<div data-ng-hide="newsLoading" style="height: 100%;">
+					<div class="news-header-image">
+						<a href="{{newsTitleUrl}}" target="_blank">
+							<img src="{{imageURL}}" alt="{{imageAlt}}" class="news-header-image">
+						</a>
+					</div>
+					<div class="news-content">
+						<a href="{{newsTitleUrl}}" class="news-header-text" target="_blank">{{newsTitle}}</a>
+
+						<br>
+
+						<span class="news-misc">{{author}} {{date}}</span>
+					</div>
+
+
+				</div>
+				<div data-ng-show="newsLoading" class="error">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-circle-o-notch fa-spin fa-stack-1x"></i>
+
+					</span>
+					<br>
+					<span class="error-message">Loading</span>
+				</div>
+			</div>
+		</div>
+		<div class="card col order-3 stock" data-ng-controller="StockCtrl">
 			<div class="card-wrapper">
 				<span>Index Components - Top Movers</span>
 
@@ -30,22 +69,22 @@
 					<div class="col-1_3 abbreviations">
 						<span class="col-header">Symbol</span>
 						<br>
-						<span ng-repeat="stock in stockValues">{{stock.Symbol}}</span>
+						<span data-ng-repeat="stock in stockValues">{{stock.Symbol}}</span>
 					</div>
 					<div class="col-1_3 text-align-center">
-						<span class="col-header">Price</span>
+						<span class="col-header">Price($)</span>
 						<br>
-						<span ng-repeat="stock in stockValues">{{stock.LastTradePriceOnly}}</span>
+						<span data-ng-repeat="stock in stockValues">{{stock.LastTradePriceOnly}}</span>
 					</div>
 					<div class="col-1_3 text-align-right">
-						<span class="col-header">% Change</span>
+						<span class="col-header">Change(%)</span>
 						<br>
-						<span ng-repeat="stock in stockValues" ng-class="stockChangeColor(stock.Change)">{{stock.Change}}</span>
+						<span data-ng-repeat="stock in stockValues" data-ng-class="stockChangeColor(stock.Change)">{{stock.Change}}</span>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="card col order-4 btc text-align-center" ng-controller="BitcoinConversionCtrl">
+		<div class="card col order-4 btc text-align-center" data-ng-controller="BitcoinConversionCtrl">
 			<div class="card-wrapper">
 				<img src="http://yearofopensource.net/wp-content/uploads/2012/10/bitcoin.png" alt="BitCoin">
 				<br>
@@ -57,6 +96,7 @@
 					50% increase in Bitcoin value since yesterday
 				</span>
 			</div>
+			<span class="btc-update">Last updated: {{lastUpdateTime}}</span>
 			<!-- http://zerosixthree.se/vertical-align-anything-with-just-3-lines-of-css/ -->
 		</div>
 		<div class="card col order-5 products">
@@ -73,25 +113,25 @@
 					<div class="product-view">
 						<span>
 							<span class="fa-stack">
-								
+
 								<i class="fa fa-circle fa-stack-2x"></i>
 								<i class="fa fa-arrow-right fa-stack-1x fa-inverse"></i>
 							</span><a href="#" target="blank">View product</a>
 						</span>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
-		<div class="card col order-6 currency-conversion" ng-controller="CurrencyConversionCtrl">
+		<div class="card col order-6 currency-conversion" data-ng-controller="CurrencyConversionCtrl">
 			<div class="card-wrapper">
 				<input
 					type="number"
 					name=""
 					value="{{ calcCurrency(currentCurrency) || 0 }}"
 					placeholder="1.00"
-					ng-model="fromAmount"
-					ng-focus="currentCurrency = 'from';"
+					data-ng-model="fromAmount"
+					data-ng-focus="currentCurrency = 'from';"
 					min="0"
 				>
 				<span class="currency">- USD</span>
@@ -102,8 +142,8 @@
 					name=""
 					value="{{ calcCurrency(currentCurrency) || 0 }}"
 					placeholder=""
-					ng-model="toAmount"
-					ng-focus="currentCurrency = 'to'; test()"
+					data-ng-model="toAmount"
+					data-ng-focus="currentCurrency = 'to'; test()"
 					min="0">
 				<span class="currency"> - GBP</span>
 			</div>
