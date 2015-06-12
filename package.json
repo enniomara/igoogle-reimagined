@@ -1,0 +1,23 @@
+{
+  "name": "iGoogle",
+  "version": "0.0.1",
+  "description": "Website similar to iGoogle part of an assignment for my webdevlopment class.",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-sass": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-express": "latest",
+    "grunt-open": "latest",
+    "matchdep": "latest",
+    "grunt-autoprefixer": "^3.0.3",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
