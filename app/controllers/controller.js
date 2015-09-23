@@ -16,8 +16,10 @@ app.config(function($routeProvider) {
 			templateUrl: 'app/partials/iGoogleCards.html',
 			controller: 'ManageCardPageCtrl'
 		}).
-		when('/om', {
-			templateUrl: 'app/partials/om.html',
+		when('/about', {
+			templateUrl: 'app/partials/about.html',
+			controller: 'ManageCardPageCtrl'
+		}).
 			controller: 'ManageCardPageCtrl'
 		}).
 		otherwise('/');
