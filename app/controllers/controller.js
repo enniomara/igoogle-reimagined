@@ -20,6 +20,8 @@ app.config(function($routeProvider) {
 			templateUrl: 'app/partials/about.html',
 			controller: 'ManageCardPageCtrl'
 		}).
+		when('/thanks', {
+			templateUrl: 'app/partials/thanks.html',
 			controller: 'ManageCardPageCtrl'
 		}).
 		otherwise('/');
