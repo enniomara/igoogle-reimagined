@@ -14,10 +14,10 @@
 </head>
 <body data-ng-controller="MainCtrl as main">
 
-	<nav>
+	<header>
 
 		<div class="search" data-ng-controller="SearchCtrl">
-			<a href="/#/" title="Go to mainpage">
+			<a href="#/" title="Go to mainpage">
 				<img src="assets/images/header/google-logo.png" alt="">
 			</a>
 			<form method="get" accept-charset="utf-8" data-ng-submit="onFormSubmit()">
@@ -29,17 +29,16 @@
 
 		</div>
 
-	</nav>
+	</header>
 	<main>
 		<div data-ng-view>
 
 		</div>
-		<div class="overlay view">
-
-		</div>
 	</main>
 	<footer>
-		<a href="/#/om">Om</a>
+		<nav>
+			<a href="#/om">Om</a>
+		</nav>
 	</footer>
 
 
