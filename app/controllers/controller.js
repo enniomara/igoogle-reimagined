@@ -370,7 +370,7 @@ app.controller('NewsCtrl',  function($scope, $http){
 
 
 	// var newsAPI = "http://www.svd.se/search.do?q=&timerange=1day&svd_section1_text=Nyheter&output=json&callback=JSON_CALLBACK";
-	var newsAPI = "https://api.import.io/store/data/24c2c0b1-2f90-4b8f-8853-9928d79d168a/_query?input/webpage/url=http%3A%2F%2Fuk.businessinsider.com%2Ffinance&_user=b7d849d5-dbf3-4d04-8d41-a6433065a501&_apikey=b7d849d5-dbf3-4d04-8d41-a6433065a501%3ARRSQkEPuLQoXPpSfvJxwQV2hNFa%2Bsa9Qnwxvhh52EXl69j4uO4cpkpPQYxWDqoXoZBIlmq1VT2rhMsxWI9ySDQ%3D%3D";
+	var newsAPI = "https://api.import.io/store/data/24c2c0b1-2f90-4b8f-8853-9928d79d168a/_query?input/webpage/url=http%3A%2F%2Fuk.businessinsider.com%2Ffinance&_user=b7d849d5-dbf3-4d04-8d41-a6433065a501&_apikey=b7d849d5dbf34d048d41a6433065a5014514909043ee2d0a173e949fbc9c70415da13456beb1af509f0c6f861e7611797af63e2e3b87299293d0631583aa85e86412259aad554f6ae132cc5623dc920d";
 	// Make a GET retuest with $http to the news API
 	$http.get(newsAPI)
 		.then(function(response) {
